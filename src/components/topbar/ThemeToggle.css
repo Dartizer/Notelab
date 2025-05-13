@@ -1,0 +1,43 @@
+.theme-toggle {
+  width: 75px;
+  height: 42px;
+  border-radius: 30px;
+  background-color: #ffffff;
+  position: relative;
+  cursor: pointer;
+}
+
+.circle {
+  width: 30px;
+  height: 30px;
+  background-color: #6e45ca;
+  border-radius: 50%;
+  position: absolute;
+  top: 6px;
+  transition: left 0.3s ease;
+}
+
+.circle.left {
+  left: 6px;
+}
+
+.circle.right {
+  left: 39px;
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  top: 9px;
+  transition: left 0.1s ease;
+}
+
+.icon.left-of-circle {
+  left: 39px; /* круг слева (6px), иконка справа от него (6 + 30 + 3 = 39) */
+}
+
+.icon.right-of-circle {
+  left: 6px; /* круг справа (39px), иконка слева от него (39 - 3 - 24 = 12) */
+  left: 12px;
+}

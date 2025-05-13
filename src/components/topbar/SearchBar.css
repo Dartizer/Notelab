@@ -1,0 +1,76 @@
+.search-bar {
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 30px;
+  width: 350px;
+  height: 50px;
+  padding: 0 20px;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.search-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.3s;
+}
+
+.search-icon img {
+  width: 24px;
+  height: 24px;
+  opacity: 0.4; /* Иконка по умолчанию будет полупрозрачной */
+  transition: color 0.3s;
+}
+
+.search-input {
+  margin-left: 8px;
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 400;
+  font-weight: normal;
+  font-size: 18px;
+  outline: none;
+  transition: color 0.3s, font-weight 0.3s;
+}
+
+.search-input::placeholder {
+  color: inherit;
+}
+
+/* Ховер-эффект для .search-bar */
+.search-bar:hover {
+  background-color: #6E45CA; /* Цвет фона при наведении */
+  box-shadow: 0 0 30px 0 rgba(110, 69, 202, 0.24);
+}
+
+/* Состояние .search-icon при ховере */
+.search-bar:hover .search-icon img {
+  opacity: 1; /* Иконка становится полностью видимой при ховере */
+}
+
+/* Состояние текста в .search-input при ховере */
+.search-bar:hover .search-input {
+  color: rgba(255, 255, 255, 1); /* Цвет текста при ховере */
+  font-weight: 500; /* Текст становится Medium */
+}
+
+/* Состояние при клике (focus) */
+.search-bar:focus-within {
+  background-color: transparent; /* Убираем фон */
+  border: 2px solid #6E45CA; /* Добавляем обводку */
+}
+
+/* Прячем иконку при клике */
+.search-bar:focus-within .search-icon img {
+  display: none;
+}
+
+/* Изменение цвета текста в .search-input при клике */
+.search-bar:focus-within .search-input {
+  color: #FFFFFF; /* Цвет текста при клике */
+  font-weight: normal; /* Шрифт Regular */
+}

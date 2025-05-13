@@ -1,0 +1,65 @@
+/* src/components/Topbar.css */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 90px;
+  background-color: #191919;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+/* Убедимся, что все элементы топбара находятся в одном контейнере */
+.topbar-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; /* Правый выравнивание */
+  gap: 40px; /* Отступ между компонентами */
+  width: auto; /* Убираем фиксированную ширину */
+}
+
+/* Для иконок в правой части */
+.topbar-icons {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+}
+
+.topbar-icon {
+  width: 30px;
+  height: 30px;
+  opacity: 0.5;
+  transition: opacity 0.3s;
+  cursor: pointer;
+}
+
+.topbar-icon:hover {
+  opacity: 1;
+}
+
+.topbar-icon.clicked {
+  opacity: 1;
+  filter: brightness(0) saturate(100%) invert(39%) sepia(46%) saturate(666%) hue-rotate(224deg) brightness(95%) contrast(91%);
+}
+
+/* Иконки внутри topbar-icons */
+.topbar-icons img {
+  width: 30px;
+  height: 30px;
+  transition: transform 0.2s ease, opacity 0.2s ease; /* Анимация для сжатия и прозрачности */
+}
+
+.topbar-icons img.clicked {
+  transform: scale(0.9); /* Иконка сжимается при клике */
+  opacity: 1; /* Обеспечиваем, чтобы иконка оставалась видимой */
+}
+
+/* Если нужен блок поиска, добавим сюда */
+.search-bar {
+  margin-left: auto; /* Отодвигает элемент к правому краю */
+  width: 300px; /* Можно регулировать размер */
+}

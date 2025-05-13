@@ -1,0 +1,50 @@
+/* profileButton.css */
+.profile-button {
+  width: 190px;
+  height: 50px;
+  background-color: rgba(255, 255, 255, 0.2); /* Белый фон с 20% прозрачностью */
+  display: flex;
+  align-items: center;
+  padding: 8px 20px;
+  box-sizing: border-box;
+  border-radius: 25px;
+  position: relative;
+  transition: all 0.3s ease; /* Плавный переход для всех изменений */
+}
+
+.profile-button:hover {
+  background-color: #6E45CA; /* Цвет фона при ховере */
+  box-shadow: 0 0 30px 0 rgba(110, 69, 202, 0.24);
+}
+
+.avatar-container {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 8px;
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.username {
+  font-family: 'Montserrat', sans-serif; /* Убедимся, что шрифт Montserrat подключен */
+  font-weight: 400;  /* Regular */
+  font-size: 18px;
+  color: #ffffff;
+  margin-right: auto;
+  transition: font-weight 0.3s ease; /* Плавное изменение шрифта */
+}
+
+.profile-button:hover .username {
+  font-weight: 700; /* Меняем шрифт на medium при ховере */
+}
+
+.arrow-icon {
+  width: 15px;
+  height: 10px;
+}
