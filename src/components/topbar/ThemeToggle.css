@@ -1,43 +1,50 @@
+/* Обёртка переключателя темы */
 .theme-toggle {
-  width: 75px;
-  height: 42px;
-  border-radius: 30px;
+  width: 75px;              /* Общая ширина переключателя */
+  height: 42px;             /* Высота переключателя */
+  border-radius: 30px;      /* Скругление для овальной формы */
   background-color: #ffffff;
   position: relative;
   cursor: pointer;
 }
 
+/* Подвижный круг (ползунок) */
 .circle {
   width: 30px;
   height: 30px;
-  background-color: #6e45ca;
-  border-radius: 50%;
+  background-color: #6e45ca;   /* Цвет круга */
+  border-radius: 50%;          /* Делает круг круглым */
   position: absolute;
-  top: 6px;
-  transition: left 0.3s ease;
+  top: 6px;                    /* Отступ сверху для выравнивания по центру */
+  transition: left 0.3s ease; /* Плавное перемещение при переключении */
 }
 
+/* Позиция круга — слева */
 .circle.left {
   left: 6px;
 }
 
+/* Позиция круга — справа */
 .circle.right {
-  left: 39px;
+  left: 39px; /* 75 - 6 - 30 = 39 */
 }
 
+/* Иконка темы (луна/солнце) */
 .icon {
   width: 24px;
   height: 24px;
   position: absolute;
-  top: 9px;
-  transition: left 0.1s ease;
+  top: 9px;                   /* Центрируем иконку по вертикали */
+  transition: left 0.2s ease;
+  pointer-events: none;       /* Иконка не мешает клику */
 }
 
+/* Иконка, если круг слева — значит она справа */
 .icon.left-of-circle {
-  left: 39px; /* круг слева (6px), иконка справа от него (6 + 30 + 3 = 39) */
+  left: 39px; /* 6 (отступ) + 30 (круг) + 3 = 39 */
 }
 
+/* Иконка, если круг справа — значит она слева */
 .icon.right-of-circle {
-  left: 6px; /* круг справа (39px), иконка слева от него (39 - 3 - 24 = 12) */
-  left: 12px;
+  left: 12px; /* Отступ между иконкой и кругом слева */
 }

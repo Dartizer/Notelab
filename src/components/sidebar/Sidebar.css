@@ -1,0 +1,9 @@
+.sidebar {
+  width: 320px;
+  background-color: #191919;
+  height: calc(100vh - 90px); /* Высота окна минус высота Topbar */
+  position: fixed;
+  top: 90px; /* Отступ от Topbar */
+  left: 0;
+  z-index: 900; /* Ниже, чем Topbar (1000) */
+}
