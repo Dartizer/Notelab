@@ -1,8 +1,9 @@
 import './Sidebar.css';
 import SidebarItem from './SidebarItem';
 import SidebarButton from './SidebarButton';
-import SectionLabel from './SectionLabel';
 import ProjectsList from './ProjectsList';
+import SidebarFooter from './SidebarFooter';
+
 
 import homeIcon from '../../assets/icons/sidebar/home.svg';
 import habitsIcon from '../../assets/icons/sidebar/habits.svg';
@@ -21,6 +22,7 @@ const Sidebar = () => {
 
       {/* Заголовок "Проекты" */}
       <ProjectsList />
+      <SidebarFooter />
     </aside>
   );
 };
