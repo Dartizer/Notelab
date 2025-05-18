@@ -1,3 +1,4 @@
+import Logo from './Logo';
 // Импортируем компонент поисковой строки
 import SearchBar from './SearchBar';
 
@@ -15,7 +16,7 @@ const Topbar = () => {
     <header className="topbar">
       {/* Левая часть: логотип + поиск */}
       <div className="topbar-left">
-        <div className="topbar-logo">Notelab</div>
+        <Logo />
         <SearchBar />
       </div>
 

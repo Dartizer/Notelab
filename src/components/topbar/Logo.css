@@ -1,0 +1,17 @@
+.topbar-logo {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 24px;
+  color: #ffffff;
+
+  display: flex;
+  align-items: center;
+  height: 100%;
+
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.topbar-logo:hover {
+  color: #6e45ca;
+}

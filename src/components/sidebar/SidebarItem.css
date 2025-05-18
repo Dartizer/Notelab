@@ -1,0 +1,50 @@
+.sidebar-item {
+  padding: 0 10px; /* внутренние отступы */
+  margin-top: 10px;
+}
+
+.sidebar-content:hover,
+.sidebar-content.active {
+  background-color: #6E45CA;
+  box-shadow: 0 0 30px 0 rgba(110, 69, 202, 0.24);
+}
+
+.sidebar-content {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  border-radius: 9999px;
+  background-color: transparent;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+  filter: brightness(0) invert(1);
+  display: block;
+}
+
+.sidebar-text {
+  color: #ffffff;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  transition: font-weight 0.2s ease;
+}
+
+.sidebar-content:hover .sidebar-text,
+.sidebar-content.active .sidebar-text {
+  font-weight: 500;
+}
+
+.sidebar-content:active {
+  background-color: rgba(110, 69, 202, 0.5);
+  transform: scale(0.98); /* лёгкое сжатие */
+}
+

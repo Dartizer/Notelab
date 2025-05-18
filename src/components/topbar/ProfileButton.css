@@ -52,7 +52,7 @@
 
 /* При ховере — делаем имя жирнее */
 .profile-button:hover .username {
-  font-weight: 700;
+  font-weight: 500;
 }
 
 /* Иконка стрелки (справа) */
