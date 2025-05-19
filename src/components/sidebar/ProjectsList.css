@@ -86,3 +86,24 @@
   padding: 4px 6px;
   cursor: pointer;
 }
+
+.project-item.active .project-name {
+  font-weight: 600;
+  color: #6E45CA;
+  text-shadow: 0px 0px 5px rgba(110, 69, 202, 0.3);
+}
+.context-menu {
+  /* можно здесь добавить анимации, тени и др. */
+  user-select: none;
+}
+
+.project-menu-item {
+  font-size: 14px;
+  color: #fff;
+  padding: 6px 8px;
+  cursor: pointer;
+}
+
+.project-menu-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}

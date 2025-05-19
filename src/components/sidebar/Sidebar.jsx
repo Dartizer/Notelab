@@ -1,14 +1,16 @@
+import { useRef } from 'react';
 import './Sidebar.css';
 import SidebarItem from './SidebarItem';
 import SidebarButton from './SidebarButton';
 import ProjectsList from './ProjectsList';
 import SidebarFooter from './SidebarFooter';
 
-
 import homeIcon from '../../assets/icons/sidebar/home.svg';
 import habitsIcon from '../../assets/icons/sidebar/habits.svg';
 
 const Sidebar = () => {
+  const projectsRef = useRef();
+
   return (
     <aside className="sidebar">
       <div className="sidebar-nav">
@@ -16,12 +18,12 @@ const Sidebar = () => {
         <SidebarItem icon={habitsIcon} text="Привычки" />
       </div>
 
-      <SidebarButton />
+      <SidebarButton onClick={() => projectsRef.current?.addProject()} />
 
       <div className="sidebar-divider" />
 
-      {/* Заголовок "Проекты" */}
-      <ProjectsList />
+      <ProjectsList ref={projectsRef} />
+
       <SidebarFooter />
     </aside>
   );

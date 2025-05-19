@@ -13,7 +13,14 @@
   font-weight: 500;
   color: rgba(255, 255, 255, 0.4);
   transition: color 0.2s ease;
+  user-select: none; /* чтоб не выделялся при клике */
 }
+
+.section-label-text:hover {
+  color: rgba(255, 255, 255, 1);
+  cursor: pointer;
+}
+
 
 .section-label-plus {
   width: 18px;

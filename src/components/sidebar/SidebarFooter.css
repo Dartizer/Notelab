@@ -1,24 +1,42 @@
 .sidebar-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 30px 30px;
   position: absolute;
-  bottom: 0;
-  width: 100%;
-  box-sizing: border-box;
+  bottom: 30px;
+  left: 30px;
+  display: flex;
+  gap: 30px;
+}
+
+.sidebar-footer-icon,
+.sidebar-footer-close {
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.3s ease;
+  opacity: 0.5;
 }
 
 .sidebar-footer-icon {
   width: 30px;
   height: 30px;
-  cursor: pointer;
 }
 
-.sidebar-footer-icon + .sidebar-footer-icon {
-  margin-left: 30px;
+.sidebar-footer-close {
+  position: absolute;
+  right: 30px;
+  bottom: 38px;
+  width: 19px;
+  height: 15px;
 }
 
-.sidebar-footer-icon.right {
-  margin-left: auto;
+/* Hover-эффект */
+.sidebar-footer-icon:hover,
+.sidebar-footer-close:hover {
+  opacity: 1;
+}
+
+/* Кликнутый стиль */
+.sidebar-footer-icon.clicked,
+.sidebar-footer-close.clicked {
+  transform: scale(0.9);
+  opacity: 1;
+  filter: brightness(0) saturate(100%) invert(39%) sepia(46%) saturate(666%)
+    hue-rotate(224deg) brightness(95%) contrast(91%);
 }
