@@ -10,8 +10,8 @@
 
   cursor: pointer;
   transition: color 0.3s ease;
-}
 
-.topbar-logo:hover {
-  color: #6e45ca;
+  &:hover {
+    color: #6e45ca;
+  }
 }

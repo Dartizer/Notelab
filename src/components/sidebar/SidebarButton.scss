@@ -1,0 +1,42 @@
+.sidebar-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 215px;
+  height: 46px;
+  margin: 20px auto 0;
+  padding: 0 20px;
+  gap: 10px;
+
+  background-color: #6e45ca;
+  border-radius: 9999px;
+  cursor: pointer;
+
+  color: #fff;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease,
+    font-weight 0.3s ease,
+    transform 0.1s ease;
+
+  &:hover {
+    background-color: rgba(110, 69, 202, 0.8);
+    font-weight: 500;
+    box-shadow: 0 0 30px rgba(110, 69, 202, 0.24);
+  }
+
+  &:active {
+    background-color: rgba(110, 69, 202, 0.5);
+    transform: scale(0.98);
+  }
+
+  .sidebar-button-icon {
+    font-size: 22px;
+    line-height: 1;
+  }
+}

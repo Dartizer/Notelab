@@ -1,6 +1,16 @@
-import { useState, useEffect, useImperativeHandle, forwardRef } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useImperativeHandle,
+  forwardRef,
+  Ref,
+  KeyboardEvent,
+  ChangeEvent,
+  MouseEvent,
+  useCallback,
+} from 'react';
 import SectionLabel from './SectionLabel';
-import './ProjectsList.css';
+import './ProjectsList.scss';
 import menuIcon from '../../assets/icons/sidebar/menu.svg';
 
 import {
@@ -10,6 +20,7 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
+  DragEndEvent,
 } from '@dnd-kit/core';
 
 import {
@@ -22,7 +33,35 @@ import {
 
 import { CSS } from '@dnd-kit/utilities';
 
-// Компонент одного перетаскиваемого проекта
+interface Project {
+  id: number;
+  name: string;
+  isFavorite: boolean;
+}
+
+interface SortableProjectItemProps {
+  id: string;
+  project: Project;
+  isActive: boolean;
+  editingId: number | null;
+  editingValue: string;
+  setEditingValue: (value: string) => void;
+  onStartEdit: (id: number, currentName: string) => void;
+  onFinishEdit: () => void;
+  onKeyDown: (e: KeyboardEvent<HTMLInputElement>) => void;
+  onSetActive: (id: string) => void;
+  openMenuId: number | null;
+  setOpenMenuId: React.Dispatch<React.SetStateAction<number | null>>;
+  menuIcon: string;
+  handleDuplicate: (id: number) => void;
+  handleToggleFavorite: (id: number) => void;
+  confirmAndDelete: (id: number) => void;
+  menuPosition: { x: number; y: number } | null;
+  setMenuPosition: React.Dispatch<
+    React.SetStateAction<{ x: number; y: number } | null>
+  >;
+}
+
 function SortableProjectItem({
   id,
   project,
@@ -42,7 +81,7 @@ function SortableProjectItem({
   confirmAndDelete,
   menuPosition,
   setMenuPosition,
-}) {
+}: SortableProjectItemProps) {
   const {
     attributes,
     listeners,
@@ -60,26 +99,23 @@ function SortableProjectItem({
     opacity: isDragging ? 0.5 : 1,
   };
 
-  const handleContextMenu = (e) => {
+  const handleContextMenu = (e: MouseEvent<HTMLLIElement>) => {
     e.preventDefault();
     setOpenMenuId(project.id);
-    setMenuPosition({
-      x: e.clientX,
-      y: e.clientY,
-    });
+    setMenuPosition({ x: e.clientX, y: e.clientY });
   };
 
   useEffect(() => {
-    const handleClickOutside = (e) => {
+    const handleClickOutside = (e: Event) => {
+      const target = e.target as HTMLElement;
       if (
-        !e.target.closest('.project-menu') &&
-        !e.target.closest('.project-menu-icon')
+        !target.closest('.project-menu') &&
+        !target.closest('.project-menu-icon')
       ) {
         setOpenMenuId(null);
         setMenuPosition(null);
       }
     };
-
     document.addEventListener('click', handleClickOutside);
     return () => {
       document.removeEventListener('click', handleClickOutside);
@@ -99,7 +135,9 @@ function SortableProjectItem({
         <input
           className="project-input"
           value={editingValue}
-          onChange={(e) => setEditingValue(e.target.value)}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setEditingValue(e.target.value)
+          }
           onBlur={onFinishEdit}
           onKeyDown={onKeyDown}
           autoFocus
@@ -124,7 +162,6 @@ function SortableProjectItem({
                 setMenuPosition(null);
               }}
             />
-
             {openMenuId === project.id && (
               <div
                 className="project-menu"
@@ -188,55 +225,55 @@ function SortableProjectItem({
   );
 }
 
-const ProjectsList = forwardRef((props, ref) => {
+export interface ProjectsListHandle {
+  addProject: () => void;
+}
+
+// ... [все импорты без изменений]
+
+const ProjectsList = forwardRef<ProjectsListHandle>((_, ref: Ref<ProjectsListHandle>) => {
   const LOCAL_STORAGE_KEY = 'projects';
   const ACTIVE_ID_KEY = 'activeProjectId';
 
-  const [projects, setProjects] = useState(() => {
+  const [projects, setProjects] = useState<Project[]>(() => {
     const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
     return stored ? JSON.parse(stored) : [];
   });
 
-  const [editingId, setEditingId] = useState(null);
-  const [editingValue, setEditingValue] = useState('');
-  const [openMenuId, setOpenMenuId] = useState(null);
-  const [activeId, setActiveId] = useState(() => {
-    return localStorage.getItem(ACTIVE_ID_KEY);
-  });
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editingValue, setEditingValue] = useState<string>('');
+  const [openMenuId, setOpenMenuId] = useState<number | null>(null);
+  const [activeId, setActiveId] = useState<string | null>(() => localStorage.getItem(ACTIVE_ID_KEY));
 
-  // Новые состояния для сворачивания групп
   const [favoritesOpen, setFavoritesOpen] = useState(true);
   const [projectsOpen, setProjectsOpen] = useState(true);
 
-  // Состояние позиции меню для ПКМ
-  const [menuPosition, setMenuPosition] = useState(null);
+  const [menuPosition, setMenuPosition] = useState<{ x: number; y: number } | null>(null);
 
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(projects));
   }, [projects]);
 
-  const handleAddProject = () => {
-    const newProject = {
+  const addProject = useCallback(() => {
+    const newProject: Project = {
       id: Date.now(),
-      name: 'Страница',
+      name: 'Новая страница',
       isFavorite: false,
     };
     setProjects((prev) => [...prev, newProject]);
     setActiveId(String(newProject.id));
     localStorage.setItem(ACTIVE_ID_KEY, String(newProject.id));
-  };
+  }, []);
 
-  useImperativeHandle(ref, () => ({
-    addProject: handleAddProject,
-  }));
+  useImperativeHandle(ref, () => ({ addProject }));
 
-  const handleSetActive = (id) => {
+  const handleSetActive = (id: string) => {
     setActiveId(id);
     localStorage.setItem(ACTIVE_ID_KEY, id);
     setMenuPosition(null);
   };
 
-  const handleStartEdit = (id, currentName) => {
+  const handleStartEdit = (id: number, currentName: string) => {
     setEditingId(id);
     setEditingValue(currentName);
     setOpenMenuId(null);
@@ -249,7 +286,6 @@ const ProjectsList = forwardRef((props, ref) => {
       setEditingValue('');
       return;
     }
-
     setProjects((prev) =>
       prev.map((project) =>
         String(project.id) === String(editingId)
@@ -261,7 +297,7 @@ const ProjectsList = forwardRef((props, ref) => {
     setEditingValue('');
   };
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') handleFinishEdit();
     if (e.key === 'Escape') {
       setEditingId(null);
@@ -269,52 +305,42 @@ const ProjectsList = forwardRef((props, ref) => {
     }
   };
 
-  const handleDelete = (id) => {
-    setProjects((prev) =>
-      prev.filter((project) => String(project.id) !== String(id))
-    );
+  const handleDelete = (id: number) => {
+    setProjects((prev) => prev.filter((p) => String(p.id) !== String(id)));
     if (activeId === String(id)) {
       setActiveId(null);
       localStorage.removeItem(ACTIVE_ID_KEY);
     }
-    setOpenMenuId(null);
-    setMenuPosition(null);
     if (editingId === id) {
       setEditingId(null);
       setEditingValue('');
     }
+    setOpenMenuId(null);
+    setMenuPosition(null);
   };
 
-  const confirmAndDelete = (id) => {
-    const project = projects.find((p) => String(p.id) === String(id));
-    if (!project) return;
-
-    const isConfirmed = window.confirm(`Удалить страницу "${project.name}"?`);
-    if (isConfirmed) {
-      handleDelete(id);
-    }
+  const confirmAndDelete = (id: number) => {
+    handleDelete(id);
   };
 
-  const handleDuplicate = (id) => {
-    const original = projects.find((p) => String(p.id) === String(id));
+  const handleDuplicate = (id: number) => {
+    const original = projects.find((p) => p.id === id);
     if (!original) return;
-
-    const newProject = {
+    const newProject: Project = {
       ...original,
       id: Date.now(),
       name: `${original.name} (копия)`,
       isFavorite: false,
     };
-
     setProjects((prev) => [...prev, newProject]);
     setOpenMenuId(null);
     setMenuPosition(null);
   };
 
-  const handleToggleFavorite = (id) => {
+  const handleToggleFavorite = (id: number) => {
     setProjects((prev) =>
       prev.map((project) =>
-        String(project.id) === String(id)
+        project.id === id
           ? { ...project, isFavorite: !project.isFavorite }
           : project
       )
@@ -330,119 +356,107 @@ const ProjectsList = forwardRef((props, ref) => {
     })
   );
 
-  const handleDragEnd = (event) => {
+  const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
-
     setProjects((items) => {
       const oldIndex = items.findIndex((item) => String(item.id) === active.id);
       const newIndex = items.findIndex((item) => String(item.id) === over.id);
       return arrayMove(items, oldIndex, newIndex);
     });
-
     setOpenMenuId(null);
     setMenuPosition(null);
   };
 
   useEffect(() => {
-    const handleKeyDown = (e) => {
+    const handleDeleteKey = (e: globalThis.KeyboardEvent) => {
       if (e.key === 'Delete' && activeId !== null) {
         e.preventDefault();
-        confirmAndDelete(activeId);
-        setOpenMenuId(null);
-        setEditingId(null);
-        setEditingValue('');
-        setMenuPosition(null);
+        confirmAndDelete(Number(activeId));
       }
     };
-
-    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keydown', handleDeleteKey);
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('keydown', handleDeleteKey);
     };
-  }, [activeId]);
-
-  // Функции переключения сворачивания групп
-  const toggleFavorites = () => setFavoritesOpen((v) => !v);
-  const toggleProjects = () => setProjectsOpen((v) => !v);
+  }, [activeId, projects]);
 
   return (
     <div className="projects-wrapper">
-      {/* Избранное */}
-      {projects.some((p) => p.isFavorite) && (
-        <>
-          <SectionLabel text="Избранное" onTitleClick={toggleFavorites} />
-          {favoritesOpen && (
-            <>
-              <ul className="projects-list">
-                {projects
-                  .filter((p) => p.isFavorite)
-                  .map((project) => (
-                    <li
-                      key={project.id}
-                      className={`project-item ${
-                        String(project.id) === activeId ? 'active' : ''
-                      }`}
-                      onClick={() => handleSetActive(String(project.id))}
-                    >
-                      <div className="project-view">
-                        <span className="project-name">{project.name}</span>
-                      </div>
-                    </li>
-                  ))}
-              </ul>
-              <div className="sidebar-divider" />
-            </>
-          )}
-        </>
-      )}
+      <div className="projects-scroll-container">
+        {projects.some((p) => p.isFavorite) && (
+          <>
+            <SectionLabel text="Избранное" onTitleClick={() => setFavoritesOpen((v) => !v)} />
+            {favoritesOpen && (
+              <>
+                <ul className="projects-list">
+                  {projects
+                    .filter((p) => p.isFavorite)
+                    .map((project) => (
+                      <li
+                        key={project.id}
+                        className={`project-item ${String(project.id) === activeId ? 'active' : ''}`}
+                        onClick={() => handleSetActive(String(project.id))}
+                      >
+                        <div className="project-view">
+                          <span className="project-name">{project.name}</span>
+                        </div>
+                      </li>
+                    ))}
+                </ul>
+                <div className="sidebar-divider" />
+              </>
+            )}
+          </>
+        )}
 
-      {/* Основные проекты с drag & drop */}
-      <SectionLabel
-        text="Проекты"
-        onPlusClick={handleAddProject}
-        onTitleClick={toggleProjects}
-      />
-      {projectsOpen && (
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-        >
-          <SortableContext
-            items={projects.map((p) => String(p.id))}
-            strategy={verticalListSortingStrategy}
+        <SectionLabel
+          text="Проекты"
+          onTitleClick={() => setProjectsOpen((v) => !v)}
+          onPlusClick={addProject}
+        />
+        {projectsOpen && (
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
           >
-            <ul className="projects-list">
-              {projects.map((project) => (
-                <SortableProjectItem
-                  key={project.id}
-                  id={String(project.id)}
-                  project={project}
-                  isActive={String(project.id) === activeId}
-                  editingId={editingId}
-                  editingValue={editingValue}
-                  setEditingValue={setEditingValue}
-                  onStartEdit={handleStartEdit}
-                  onFinishEdit={handleFinishEdit}
-                  onKeyDown={handleKeyDown}
-                  onSetActive={handleSetActive}
-                  openMenuId={openMenuId}
-                  setOpenMenuId={setOpenMenuId}
-                  menuIcon={menuIcon}
-                  handleDuplicate={handleDuplicate}
-                  handleToggleFavorite={handleToggleFavorite}
-                  confirmAndDelete={confirmAndDelete}
-                  menuPosition={menuPosition}
-                  setMenuPosition={setMenuPosition}
-                />
-              ))}
-            </ul>
-          </SortableContext>
-        </DndContext>
-      )}
+            <SortableContext
+              items={projects.map((p) => String(p.id))}
+              strategy={verticalListSortingStrategy}
+            >
+              <ul className="projects-list">
+                {projects.map((project) => (
+                  <SortableProjectItem
+                    key={project.id}
+                    id={String(project.id)}
+                    project={project}
+                    isActive={String(project.id) === activeId}
+                    editingId={editingId}
+                    editingValue={editingValue}
+                    setEditingValue={setEditingValue}
+                    onStartEdit={handleStartEdit}
+                    onFinishEdit={handleFinishEdit}
+                    onKeyDown={handleKeyDown}
+                    onSetActive={handleSetActive}
+                    openMenuId={openMenuId}
+                    setOpenMenuId={setOpenMenuId}
+                    menuIcon={menuIcon}
+                    handleDuplicate={handleDuplicate}
+                    handleToggleFavorite={handleToggleFavorite}
+                    confirmAndDelete={confirmAndDelete}
+                    menuPosition={menuPosition}
+                    setMenuPosition={setMenuPosition}
+                  />
+                ))}
+              </ul>
+            </SortableContext>
+          </DndContext>
+        )}
+      </div>
     </div>
   );
 });
 
 export default ProjectsList;
+

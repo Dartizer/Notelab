@@ -1,13 +1,26 @@
-import './SectionLabel.css';
+import React from 'react';
+import './SectionLabel.scss';
 import plusIcon from '../../assets/icons/sidebar/plus.svg';
 
-const SectionLabel = ({ text, onPlusClick, onTitleClick }) => {
+interface SectionLabelProps {
+  text: string;
+  onPlusClick?: () => void;
+  onTitleClick?: () => void;
+}
+
+const SectionLabel: React.FC<SectionLabelProps> = ({
+  text,
+  onPlusClick,
+  onTitleClick,
+}) => {
+  const isClickable = Boolean(onTitleClick);
+
   return (
     <div className="section-label">
       <span
         className="section-label-text"
         onClick={onTitleClick}
-        style={{ cursor: onTitleClick ? 'pointer' : 'default' }}
+        style={{ cursor: isClickable ? 'pointer' : 'default' }}
       >
         {text}
       </span>

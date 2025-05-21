@@ -1,51 +1,54 @@
-import { useState } from 'react';
+import React, { useState, useCallback } from 'react';
+
 import settingIcon from '../../assets/icons/topbar/settings.svg';
 import pomodoroIcon from '../../assets/icons/topbar/pomodoro.svg';
 import bellIcon from '../../assets/icons/topbar/bell.svg';
 
-// Массив с иконками и их действиями
-const icons = [
+type Icon = {
+  name: string;
+  src: string;
+  alt: string;
+  tooltip: string;
+  onClick: () => void;
+};
+
+const icons: Icon[] = [
   {
     name: 'settings',
     src: settingIcon,
     alt: 'Настройки',
     tooltip: 'Настройки',
-    onClick: () => {
-      console.log('Открываем настройки...');
-      // Здесь можно вызвать openSettingsModal() и т.д.
-    },
+    onClick: () => console.log('Открываем настройки...'),
   },
   {
     name: 'pomodoro',
     src: pomodoroIcon,
     alt: 'Pomodoro',
     tooltip: 'Таймер Pomodoro',
-    onClick: () => {
-      console.log('Запуск Pomodoro...');
-      // Пример: startPomodoro();
-    },
+    onClick: () => console.log('Запуск Pomodoro...'),
   },
   {
     name: 'bell',
     src: bellIcon,
     alt: 'Уведомления',
     tooltip: 'Уведомления',
-    onClick: () => {
-      console.log('Открываем уведомления...');
-      // Пример: openNotifications();
-    },
+    onClick: () => console.log('Открываем уведомления...'),
   },
 ];
 
-const TopbarIcons = () => {
-  const [clickedIcon, setClickedIcon] = useState(null);
+const TopbarIcons: React.FC = () => {
+  const [clickedIcon, setClickedIcon] = useState<string | null>(null);
 
-  const handleClick = (icon) => {
-    setClickedIcon(icon.name);
-    icon.onClick(); // Выполняем действие
+  const handleClick = useCallback(
+    (icon: Icon) => {
+      if (clickedIcon) return;
 
-    setTimeout(() => setClickedIcon(null), 200);
-  };
+      setClickedIcon(icon.name);
+      icon.onClick();
+      setTimeout(() => setClickedIcon(null), 200);
+    },
+    [clickedIcon]
+  );
 
   return (
     <div className="topbar-icons">
@@ -54,9 +57,10 @@ const TopbarIcons = () => {
           key={icon.name}
           src={icon.src}
           alt={icon.alt}
-          title={icon.tooltip} // Это и есть простой tooltip
+          title={icon.tooltip}
           className={`topbar-icon ${clickedIcon === icon.name ? 'clicked' : ''}`}
           onClick={() => handleClick(icon)}
+          draggable={false}
         />
       ))}
     </div>
